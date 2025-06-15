@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartdoc"
+version = "0.1"
+description = "A tool to generate API documentation for FastAPI/Django/Flask apps"
+dependencies = [
+    "click==8.1.7",
+    "fastapi",
+    "flask",
+    "django",
+    "xhtml2pdf"
+]
+
+[project.scripts]
+smartdoc = "cli.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
