@@ -12,4 +12,3 @@ def generate_html(md_content, output_basename):
     with open(f"{output_basename}.html", "w", encoding="utf-8") as f:
         f.write(html)
 
-    print(f"✅ HTML written to {output_basename}.html")
