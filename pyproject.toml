@@ -3,8 +3,13 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "smartdoc"
-version = "0.1.0"
+# for test pypi
+#name = "smartdoc"
+#version = "0.1.7"
+
+# for real pypi
+name = "smartdoc-cli"
+version = "0.1.5"
 description = "SmartDoc: A tool to generate API documentation for FastAPI, Flask, and Django projects."
 authors = [
     { name = "Mohammad Safwan Athar", email = "mohammadsafwanathar27@gmail.com" }
@@ -18,6 +23,7 @@ dependencies = [
     "django",
     "markdown",        # for HTML conversion
     "weasyprint",      # for PDF generation
+    "xhtml2pdf",
 ]
 
 [project.scripts]

@@ -1,12 +1,12 @@
-# SmartDoc
+# SmartDoc CLI
 
-SmartDoc is a CLI tool to automatically generate Markdown, HTML, and PDF API documentation for web frameworks like **FastAPI**, **Flask**, and **Django**.
+**SmartDoc CLI** is a command-line tool that automatically generates Markdown, HTML, and PDF API documentation for web frameworks like **FastAPI**, **Flask**, and **Django**.
 
 ---
 ## Installation
 
 ```bash
-pip install smartdoc
+pip install smartdoc-cli
 ```
 (For testing with Test PyPI)
 
@@ -41,7 +41,144 @@ smartdoc generate --app your_project.main --framework flask --output docs.md --h
 ```bash
 smartdoc generate --app your_project.main --framework django --django-settings your_project.settings --output docs.md --html --pdf
 ```
+---
+## Troubleshooting SmartDoc
+If running smartdoc generate causes import/module errors, follow these steps:
 
+Common Error:
+```bash
+ModuleNotFoundError: No module named 'apps'
+```
+Fix:
+```bash
+# For Windows PowerShell
+$env:PYTHONPATH="project"
+smartdoc generate --app main --framework fastapi --output api_docs.md --html --pdf
+```
+Replace main with the filename (without .py) that runs your FastAPI app.
+---
+|  Checkpoint       | Description                                          |
+| ----------------- |------------------------------------------------------|
+| PYTHONPATH set?   | Point to folder where `apps/`, `main.py`, etc. exist |
+| Module correct?   | Use `--app main` not full path like `project.main`   |
+| Inside virtualenv? | Make sure `.venv` is activated                       |
+| Imports relative? | Use `from apps...`, not `project.apps...`            |
+
+### Tip
+If you want to avoid setting PYTHONPATH every time, create a PowerShell script run_smartdoc.ps1:
+```bash
+$env:PYTHONPATH="project"
+smartdoc generate --app main --framework fastapi --output api_docs.md --html --pdf
+```
+---
+## smartdoc.json – Custom Configuration File
+Place this in your root directory (same level as .venv, your_projects, etc.):
+
+### For FastApi
+```bash
+{
+  "app": "main",
+  "framework": "fastapi",
+  "output": "api_docs.md",
+  "html": true,
+  "pdf": true,
+  "pythonpath": "project_folder"
+}
+
+```
+
+### For Django
+```bash
+{
+  "app": "project_name.urls",
+  "framework": "django",
+  "output": "api_docs.md",
+  "html": true,
+  "pdf": true,
+  "pythonpath": "project_name",
+  "django-settings": "project_name.settings"
+}
+```
+
+### For Flask
+```bash
+{
+  "app": "app",  // path to your Flask app file (e.g. app.py without .py)
+  "framework": "flask",
+  "output": "api_docs.md",
+  "html": true,
+  "pdf": true,
+  "pythonpath": "."
+}
+```
+### 1. Then use a custom script to run it:
+Here’s a reusable Python script (run_smartdoc.py) to load from this config:
+
+### `run_smartdoc.py`
+```python
+import os
+import subprocess
+import json
+
+with open("smartdoc.json") as f:
+    config = json.load(f)
+
+os.environ["PYTHONPATH"] = config["pythonpath"]
+
+cmd = [
+    "smartdoc",
+    "generate",
+    "--app", config["app"],
+    "--framework", config["framework"],
+    "--output", config["output"]
+]
+
+if config.get("html"):
+    cmd.append("--html")
+if config.get("pdf"):
+    cmd.append("--pdf")
+
+subprocess.run(cmd)
+```
+Run it with:
+`python run_smartdoc.py
+`
+
+### Note: Additional step for Django and Flask:
+#### 1. Django
+```text
+In Python Script you need to set the DJANGO_SETTINGS_MODULE environment variable.
+```
+Update run_smartdoc.py like this:
+
+```python
+os.environ["DJANGO_SETTINGS_MODULE"] = config.get("django-settings", "")
+```
+
+#### 2. Flask
+```text
+In flask you only have to give the path of .py file which contains `Flask(__name__)` in the place of app.
+```
+---
+### 2. Makefile (For Mac/Linux or Git Bash)
+If you're on Linux/macOS or using Git Bash on Windows, you can use a Makefile.
+### `Makefile`
+```bash
+PYTHONPATH=your-path
+
+generate-docs:
+	PYTHONPATH=$(PYTHONPATH) smartdoc generate \
+		--app main \
+		--framework fastapi \
+		--output api_docs.md \
+		--html \
+		--pdf
+```
+Run it with:
+`make generate-docs
+`
+#### NOTE: Make the necessary changes for Django and Flask
+---
 ---
 ## CLI Options
 | Option               | Description                                       |
@@ -71,18 +208,29 @@ Built with 💻 by **Mohammad Safwan Athar** [@DevSaifOps](https://github.com/De
 ---
 ## License
 
+This project is licensed under the MIT License.
 
 ---
-
-
-Use MIT license:
-
-> `LICENSE` file:
 
 ```txt
 MIT License
 
 Copyright (c) 2025 Mohammad Safwan Athar aka DevSaifOps
 
-Permission is hereby granted, free of charge, to any person obtaining a copy...
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

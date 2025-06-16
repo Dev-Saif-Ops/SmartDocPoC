@@ -66,7 +66,7 @@ def generate(app, framework, output, html, pdf, django_settings):
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", django_settings)
             import django
             django.setup()
-        routes = extract_django()
+        routes = extract_django(module)
 
     elif framework == "flask":
         app_instance = getattr(module, "app", None)
