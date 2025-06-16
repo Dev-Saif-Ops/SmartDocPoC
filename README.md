@@ -73,7 +73,11 @@ Built with 💻 by **Mohammad Safwan Athar** [@DevSaifOps](https://github.com/De
 
 
 ---
-Create a file named `LICENSE`:
+
+
+Use MIT license:
+
+> `LICENSE` file:
 
 ```txt
 MIT License
@@ -81,4 +85,4 @@ MIT License
 Copyright (c) 2025 Mohammad Safwan Athar aka DevSaifOps
 
 Permission is hereby granted, free of charge, to any person obtaining a copy...
-[Full MIT text continues here – use boilerplate from https://opensource.org/license/mit/]
+
