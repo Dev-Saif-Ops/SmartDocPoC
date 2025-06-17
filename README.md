@@ -42,20 +42,35 @@ smartdoc generate --app your_project.main --framework flask --output docs.md --h
 smartdoc generate --app your_project.main --framework django --django-settings your_project.settings --output docs.md --html --pdf
 ```
 ---
-## Troubleshooting SmartDoc
-If running smartdoc generate causes import/module errors, follow these steps:
+## ModuleNotFoundError Fix
+You may often encounter the following error when using SmartDoc:
 
-Common Error:
 ```bash
 ModuleNotFoundError: No module named 'apps'
 ```
-Fix:
+### Solution:
+Set the PYTHONPATH to the current directory (.) or to your project folder:
+
 ```bash
 # For Windows PowerShell
-$env:PYTHONPATH="project"
+$env:PYTHONPATH="."
+```
+Or if your project is in a specific folder:
+
+```bash
+$env:PYTHONPATH="project_folder"
+```
+Then run the smartdoc generate command as usual.
+
+### Example:
+```bash
+$env:PYTHONPATH="."
 smartdoc generate --app main --framework fastapi --output api_docs.md --html --pdf
 ```
-Replace main with the filename (without .py) that runs your FastAPI app.
+### Tip: This sets your base import path, so Python knows where to find your app module.
+
+## Troubleshooting SmartDoc
+
 ---
 |  Checkpoint       | Description                                          |
 | ----------------- |------------------------------------------------------|
@@ -64,7 +79,7 @@ Replace main with the filename (without .py) that runs your FastAPI app.
 | Inside virtualenv? | Make sure `.venv` is activated                       |
 | Imports relative? | Use `from apps...`, not `project.apps...`            |
 
-### Tip
+### Tip: Reusable PowerShell Script
 If you want to avoid setting PYTHONPATH every time, create a PowerShell script run_smartdoc.ps1:
 ```bash
 $env:PYTHONPATH="project"
